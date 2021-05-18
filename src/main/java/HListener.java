@@ -10,7 +10,6 @@ import com.hazelcast.partition.PartitionService;
 import com.hazelcast.partition.ReplicaMigrationEvent;
 import config.HConfig;
 import model.Car;
-import model.RepairBook;
 import model.RepairBookEntry;
 
 import java.net.UnknownHostException;
@@ -71,9 +70,8 @@ public class HListener {
             }
         });
 
-        IMap<Long, Car> cars = instance.getMap("car");
-        IMap<Long, RepairBook> repairBooks = instance.getMap("repairBook");
-        IMap<Long, RepairBookEntry> repairBookEntries = instance.getMap("repairBookEntry");
+        IMap<Long, Car> cars = instance.getMap("cars");
+        IMap<Long, RepairBookEntry> repairBookEntries = instance.getMap("repairBookEntries");
 
         cars.addEntryListener(new EntryAddedListener<Long, Car>() {
             @Override
@@ -82,12 +80,6 @@ public class HListener {
             }
         }, true);
 
-		repairBooks.addEntryListener(new EntryAddedListener<Long, RepairBook>() {
-			@Override
-			public void entryAdded(EntryEvent<Long, RepairBook> e) {
-				System.out.println(e);
-			}
-		}, true);
 
 		repairBookEntries.addEntryListener(new EntryAddedListener<Long, RepairBookEntry>() {
 			@Override

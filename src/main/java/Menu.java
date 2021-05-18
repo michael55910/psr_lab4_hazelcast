@@ -20,8 +20,7 @@ public class Menu {
     int selectTarget() {
         System.out.println("Choose target:");
         System.out.println("[1] Car");
-        System.out.println("[2] RepairBook");
-        System.out.println("[3] RepairBookEntry");
+        System.out.println("[2] RepairBookEntry");
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
         clearScreen();

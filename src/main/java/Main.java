@@ -4,10 +4,15 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import config.HConfig;
 import model.Car;
-import model.RepairBook;
 import model.RepairBookEntry;
+import repository.CarRepository;
+import repository.RepairBookEntryRepository;
 
+import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Scanner;
 
 public class Main {
 
@@ -19,9 +24,10 @@ public class Main {
             e.printStackTrace();
         }
         HazelcastInstance client = HazelcastClient.newHazelcastClient( clientConfig );
-        IMap<Long, Car> cars = client.getMap("players");
-        IMap<Long, RepairBook> repairBooks = client.getMap("repairBooks");
+        IMap<Long, Car> cars = client.getMap("cars");
         IMap<Long, RepairBookEntry> repairBookEntries = client.getMap("repairBookEntry");
+        CarRepository carRepository = new CarRepository();
+        RepairBookEntryRepository repairBookEntryRepository = new RepairBookEntryRepository();
 
         //MENU
         Menu menu = new Menu();
@@ -33,16 +39,48 @@ public class Main {
             int target = menu.selectTarget();
             switch (operation) {
                 case 1:
+                    switch (target) {
+                        case 1 -> carRepository.addCar();
+                        case 2 -> repairBookEntryRepository.addEntry();
+                    }
                     break;
                 case 2:
+                    switch (target) {
+                        case 1 -> carRepository.updateById(getId());
+                        case 2 -> repairBookEntryRepository.updateById(getId());
+                    }
                     break;
                 case 3:
+                    switch (target) {
+                        case 1 -> carRepository.deleteById(getId());
+                        case 2 -> repairBookEntryRepository.deleteById(getId());
+                    }
                     break;
                 case 4:
+                    switch (target) {
+                        case 1 -> carRepository.getById(getId());
+                        case 2 -> repairBookEntryRepository.getById(getId());
+                    }
                     break;
                 case 5:
+                    Scanner scanner = new Scanner(System.in);
+                    switch (target) {
+                        case 1:
+                            System.out.print("Podaj model: ");
+                            carRepository.getByModel(scanner.nextLine());
+                        case 2:
+                            System.out.print("Podaj datę (dd-MM-yyy): ");
+                            try {
+                                repairBookEntryRepository.getByDate(new SimpleDateFormat("dd-MM-yyyy").parse(scanner.nextLine()));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                    }
                     break;
                 case 6:
+                    switch (target) {
+                        case 2 -> repairBookEntryRepository.MarkAllDone();
+                    }
                     break;
                 default:
                     System.out.println("Błędny wybór!");
@@ -52,6 +90,10 @@ public class Main {
         
     }
 
-
+    private static Long getId() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Podaj id: ");
+        return scanner.nextLong();
+    }
 
 }
